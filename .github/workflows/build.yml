@@ -1,0 +1,20 @@
+name: Build Dylib
+on: [push, workflow_dispatch]
+
+jobs:
+  build:
+    runs-on: macos-latest
+    env:
+      HOMEBREW_NO_REQUIRE_TAP_TRUST: 1
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/cache@v4
+        with:
+          path: ~/theos
+          key: theos-${{ runner.os }}
+      - uses: Randomblock1/theos-action@main
+      - run: make package FINALPACKAGE=1
+      - uses: actions/upload-artifact@v4
+        with:
+          name: UniversalVIP-Dylib
+          path: .theos/obj/**/*.dylib
